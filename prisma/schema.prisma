@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  student   Student?
+  teacher   Teacher?
+}
+
+model Student {
+  id         String        @id @default(uuid())
+  userId     String        @unique
+  groupId    String?
+  status     StudentStatus @default(NEW)
+  attendance Attendance[]
+  payments   Payment[]
+  group      Group?        @relation(fields: [groupId], references: [id])
+  user       User          @relation(fields: [userId], references: [id])
+  tests      TestResult[]
+}
+
+model Teacher {
+  id       String    @id @default(uuid())
+  userId   String    @unique
+  groups   Group[]
+  user     User      @relation(fields: [userId], references: [id])
+  subjects Subject[] @relation("TeacherSubjects")
+}
+
+model Subject {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  groups   Group[]
+  teachers Teacher[] @relation("TeacherSubjects")
+}
+
+model Group {
+  id        String    @id @default(uuid())
+  name      String
+  level     String
+  teacherId String
+  subjectId String
+  schedule  String?
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  students  Student[]
+}
+
+model Attendance {
+  id        String           @id @default(uuid())
+  studentId String
+  date      DateTime
+  status    AttendanceStatus
+  student   Student          @relation(fields: [studentId], references: [id])
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  studentId String
+  amount    Float
+  date      DateTime      @default(now())
+  method    PaymentMethod
+  student   Student       @relation(fields: [studentId], references: [id])
+}
+
+model TestResult {
+  id        String   @id @default(uuid())
+  studentId String
+  score     Int
+  maxScore  Int
+  date      DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+  RECEPTIONIST
+}
+
+enum StudentStatus {
+  NEW
+  ACTIVE
+  SUSPENDED
+  GRADUATED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  ONLINE
+}

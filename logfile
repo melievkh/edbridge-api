@@ -1,0 +1,13 @@
+2025-11-11 13:49:49.244 +05 [16699] LOG:  starting PostgreSQL 14.19 (Homebrew) on aarch64-apple-darwin25.0.0, compiled by Apple clang version 17.0.0 (clang-1700.3.19.1), 64-bit
+2025-11-11 13:49:49.245 +05 [16699] LOG:  listening on IPv6 address "::1", port 5432
+2025-11-11 13:49:49.245 +05 [16699] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-11-11 13:49:49.246 +05 [16699] FATAL:  could not open lock file "/tmp/.s.PGSQL.5432.lock": Permission denied
+2025-11-11 13:49:49.246 +05 [16699] LOG:  database system is shut down
+2025-11-11 20:15:34.566 +05 [34085] LOG:  starting PostgreSQL 14.19 (Homebrew) on aarch64-apple-darwin25.0.0, compiled by Apple clang version 17.0.0 (clang-1700.3.19.1), 64-bit
+2025-11-11 20:15:34.567 +05 [34085] LOG:  could not bind IPv6 address "::1": Address already in use
+2025-11-11 20:15:34.567 +05 [34085] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2025-11-11 20:15:34.567 +05 [34085] LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
+2025-11-11 20:15:34.567 +05 [34085] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2025-11-11 20:15:34.567 +05 [34085] WARNING:  could not create listen socket for "localhost"
+2025-11-11 20:15:34.567 +05 [34085] FATAL:  could not create any TCP/IP sockets
+2025-11-11 20:15:34.568 +05 [34085] LOG:  database system is shut down
