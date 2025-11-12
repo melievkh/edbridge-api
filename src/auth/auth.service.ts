@@ -1,10 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import {
-  Injectable, UnauthorizedException, NotFoundException, BadRequestException,
-  HttpException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -14,28 +11,20 @@ export class AuthService {
   ) { }
 
   async login(dto) {
+    const user = await this.prisma.user.findUnique({
+      where: { phone: dto.phone }
+    });
+    if (!user) { throw new BadRequestException('Invalid phone or password'); }
 
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { phone: dto.phone }
-      });
-      if (!user) throw new UnauthorizedException('Invalid phone or password');
+    const isMatch = await bcrypt.compare(dto.password, user.password);
+    if (!isMatch) throw new BadRequestException('Invalid password');
 
-      const isMatch = await bcrypt.compare(dto.password, user.password);
-      if (!isMatch) throw new BadRequestException('Invalid password');
-
-      return this.generateTokens(user.id, user.role);
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new HttpException('Failed to login user', 500);
-    }
+    return this.generateTokens(user.id, user.role);
   }
 
   async generateTokens(userId: string, role: string) {
     const payload = { sub: userId, role };
 
-    return {
-      accessToken: await this.jwt.signAsync(payload),
-    };
+    return { accessToken: await this.jwt.signAsync(payload) };
   }
 }
