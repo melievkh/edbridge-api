@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, BadRequestException, } from '@nestjs/common';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private jwt: JwtService
   ) { }
 
-  async login(dto) {
+  async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: { phone: dto.phone }
     });

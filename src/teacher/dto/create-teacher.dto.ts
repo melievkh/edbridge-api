@@ -1,6 +1,7 @@
+import { Type } from 'class-transformer';
 import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
-export class CreateStudentDto {
+export class TeacherDto {
   @IsPhoneNumber()
   phone: string;
 
@@ -10,10 +11,12 @@ export class CreateStudentDto {
   @IsString()
   firstname: string
 
+  @IsString()
   @IsOptional()
-  birthDate?: string;
+  password?: string;
 
   @IsString()
-  groupId?: string;
+  @IsOptional()
+  birthDate?: string;
 }
 

@@ -8,28 +8,29 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   lastname  String
   firstname String
-  phone     String    @unique
+  phone     String   @unique
   password  String
   role      Role
-  createdAt DateTime  @default(now())
-  birthDate DateTime?
+  createdAt DateTime @default(now())
+  birthDate String?
   student   Student?
   teacher   Teacher?
 }
 
 model Student {
-  id         String        @id @default(uuid())
-  userId     String        @unique
-  groupId    String?
-  status     StudentStatus @default(NEW)
-  attendance Attendance[]
-  payments   Payment[]
-  group      Group?        @relation(fields: [groupId], references: [id])
-  user       User          @relation(fields: [userId], references: [id])
-  tests      TestResult[]
+  id           String        @id @default(uuid())
+  userId       String        @unique
+  groupId      String?
+  referralCode String?
+  status       StudentStatus @default(NEW)
+  attendance   Attendance[]
+  payments     Payment[]
+  group        Group?        @relation(fields: [groupId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  tests        TestResult[]
 }
 
 model Teacher {
