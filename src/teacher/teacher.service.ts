@@ -41,26 +41,25 @@ export class TeacherService {
   }
 
   async getAllTeachers() {
-    const teachers = await this.prisma.teacher.findMany({ include: { groups: true, user: true } })
+    const teachers = await this.prisma.teacher.findMany({ include: { groups: true, user: true, subjects: true } })
 
     return { data: teachers }
   }
 
-  async deleteTeacher(userId: string) {
-    const teacher = await this.prisma.teacher.findUnique({
-      where: { userId }
+  async deleteTeacher(teacherId: string) {
+    const teacher = await this.prisma.teacher.findFirst({
+      where: { id: teacherId },
     });
 
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
-
     await this.prisma.teacher.delete({
-      where: { userId },
-    });
+      where: { id: teacherId },
+    })
 
     await this.prisma.user.delete({
-      where: { id: userId },
+      where: { id: teacher.userId },
     });
 
     return { message: 'Teacher deleted successfully' };

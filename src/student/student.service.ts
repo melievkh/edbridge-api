@@ -1,7 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, BadRequestException, HttpException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateStudentDto } from './dto/student.dto';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -58,6 +59,56 @@ export class StudentService {
     return { data: students };
   }
 
+  async updateStudent(studentId: string, dto: UpdateStudentDto) {
+    const student = await this.prisma.student.findFirst({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    await this.prisma.user.update({
+      where: { id: student.userId },
+      data: {
+        phone: dto.phone,
+        firstname: dto.firstname,
+        lastname: dto.lastname,
+        birthDate: dto.birthDate,
+      }
+    });
+
+    await this.prisma.student.update({
+      where: { id: studentId },
+      data: {
+        groupId: dto.groupId || null,
+        status: dto.status as any,
+      }
+    });
+
+    return { message: 'Student updated successfully' };
+  }
+
+  async deleteStudent(studentId: string) {
+    const student = await this.prisma.student.findFirst({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    await this.prisma.student.delete({
+      where: { id: studentId },
+    })
+
+    await this.prisma.user.delete({
+      where: { id: student.userId },
+    });
+
+    return { message: 'Student deleted successfully' };
+  }
+
   async assignStudentToGroup(data: { studentId: string; groupId: string }) {
     await this.prisma.student.update({
       where: { id: data.studentId },
@@ -67,25 +118,5 @@ export class StudentService {
     });
 
     return { message: 'Student assigned to group successfully' };
-  }
-
-  async deleteStudent(userId: string) {
-    // const student = await this.prisma.student.findFirst({
-    //   where: { userId: userId },
-    // });
-
-    // if (!student) {
-    //   throw new BadRequestException('Student not found');
-    // }
-
-    // await this.prisma.student.delete({
-    //   where: { userId: userId },
-    // })
-
-    await this.prisma.teacher.delete({
-      where: { id: 'c5ddfa85-8b25-4d76-8eef-5506d5116262' },
-    });
-
-    return { message: 'Student deleted successfully' };
   }
 }

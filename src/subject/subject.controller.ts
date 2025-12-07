@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { SubjectDto } from './dto/subject.dto';
 
@@ -14,5 +14,15 @@ export class SubjectController {
   @Get()
   getAll() {
     return this.subjectService.getAll();
+  }
+
+  @Patch(':id')
+  update(@Param('id') subjectId: string, @Body() dto: SubjectDto) {
+    return this.subjectService.update(subjectId, dto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') subjectId: string) {
+    return this.subjectService.delete(subjectId);
   }
 }

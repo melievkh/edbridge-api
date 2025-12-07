@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { CreateStudentDto } from './dto/student.dto';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Controller('student')
 export class StudentController {
@@ -16,13 +17,18 @@ export class StudentController {
     return this.studentService.getAllStudents();
   }
 
-  @Post('assign-group')
-  assignStudentToGroup(@Body() data: { studentId: string, groupId: string }) {
-    return this.studentService.assignStudentToGroup(data)
+  @Patch(':id')
+  updateStudent(@Param('id') studentId: string, @Body() dto: UpdateStudentDto) {
+    return this.studentService.updateStudent(studentId, dto);
   }
 
   @Delete('delete/:id')
-  deleteStudent(@Param('id') userId: string) {
-    return this.studentService.deleteStudent(userId);
+  deleteStudent(@Param('id') studentId: string) {
+    return this.studentService.deleteStudent(studentId);
+  }
+
+  @Post('add-to-group')
+  assignStudentToGroup(@Body() data: { studentId: string, groupId: string }) {
+    return this.studentService.assignStudentToGroup(data)
   }
 }

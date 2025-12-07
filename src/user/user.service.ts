@@ -1,6 +1,5 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -11,18 +10,19 @@ export class UserService {
     return users;
   }
 
-  generateReferralCode(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-      code += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return code;
-  }
-
-  async findUserByPhone(phone: string) {
-    return this.prisma.user.findUnique({
-      where: { phone },
+  async deleteUser(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
     });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    await this.prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return { message: 'User deleted successfully' };
   }
 }

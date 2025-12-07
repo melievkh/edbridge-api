@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { GroupDto } from './dto/create-group.dto';
 import { AssignTeacherDto } from './dto/assign-teacher.dto';
@@ -17,12 +17,12 @@ export class GroupController {
     return this.groupService.getAllGroups()
   }
 
-  @Put('assign-teacher')
+  @Patch('assign-teacher')
   assignTeacherToGroup(@Body() dto: AssignTeacherDto) {
     return this.groupService.assignTeacherToGroup(dto);
   }
 
-  @Put('assign-subject')
+  @Patch('assign-subject')
   assignSubjectToGroup(@Body() subjectId: string, groupId: string) {
     return this.groupService.assignSubjectToGroup(subjectId, groupId);
   }
@@ -30,5 +30,10 @@ export class GroupController {
   @Get(':id/students')
   getGroupStudents(@Param('id') groupId: string) {
     return this.groupService.getGroupStudents(groupId)
+  }
+
+  @Delete('delete/:id')
+  deleteGroup(@Param('id') groupId: string) {
+    return this.groupService.deleteGroup(groupId);
   }
 }

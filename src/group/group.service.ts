@@ -23,22 +23,6 @@ export class GroupService {
   }
 
   async assignTeacherToGroup(dto: AssignTeacherDto) {
-    const group = await this.prisma.group.findUnique({
-      where: { id: dto.groupId }
-    });
-
-    if (!group) {
-      throw new HttpException('Group not found', 404);
-    }
-
-    const teacher = await this.prisma.teacher.findUnique({
-      where: { id: dto.teacherId }
-    });
-
-    if (!teacher) {
-      throw new HttpException('Teacher not found', 404);
-    }
-
     await this.prisma.group.update({
       where: { id: dto.groupId },
       data: { teacherId: dto.teacherId },
@@ -53,6 +37,21 @@ export class GroupService {
       where: { id: groupId },
       data: { subjectId }
     })
+  }
+
+  async updateGroup(groupId: string, dto: GroupDto) {
+    await this.prisma.group.update({
+      where: { id: groupId },
+      data: {
+        name: dto.name,
+        level: dto.level,
+        schedule: dto.schedule,
+        teacherId: dto.teacherId,
+        subjectId: dto.subjectId
+      }
+    })
+
+    return { message: "Group updated successfully!" }
   }
 
   async getGroupStudents(groupId: string) {
@@ -82,20 +81,5 @@ export class GroupService {
     })
 
     return { message: "Group deleted successfully!" }
-  }
-
-  async updateGroup(groupId: string, dto: GroupDto) {
-    await this.prisma.group.update({
-      where: { id: groupId },
-      data: {
-        name: dto.name,
-        level: dto.level,
-        schedule: dto.schedule,
-        teacherId: dto.teacherId,
-        subjectId: dto.subjectId
-      }
-    })
-
-    return { message: "Group updated successfully!" }
   }
 }
