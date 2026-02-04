@@ -14,21 +14,21 @@ export class StudentController {
 
   @Get()
   getAll() {
-    return this.studentService.getAllStudents();
+    return this.studentService.getAll();
   }
 
   @Patch(':id')
   updateStudent(@Param('id') studentId: string, @Body() dto: UpdateStudentDto) {
-    return this.studentService.updateStudent(studentId, dto);
+    return this.studentService.update(studentId, dto);
   }
 
   @Delete('delete/:id')
   deleteStudent(@Param('id') studentId: string) {
-    return this.studentService.deleteStudent(studentId);
+    return this.studentService.delete(studentId);
   }
 
   @Post('add-to-group')
   assignStudentToGroup(@Body() data: { studentId: string, groupId: string }) {
-    return this.studentService.assignStudentToGroup(data)
+    return this.studentService.assignToGroup(data)
   }
 }

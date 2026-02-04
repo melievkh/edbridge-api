@@ -19,7 +19,7 @@ export class SubjectService {
       include: { groups: true, teachers: true }
     })
 
-    return { data: subjects }
+    return subjects
   }
 
   async update(subjectId: string, dto: SubjectDto) {

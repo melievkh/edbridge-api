@@ -51,7 +51,7 @@ export class StudentService {
     return { message: "User created!" }
   }
 
-  async getAllStudents() {
+  async getAll() {
     const students = await this.prisma.student.findMany({
       include: { user: true, group: true, attendance: true, tests: true, payments: true },
     });
@@ -59,7 +59,7 @@ export class StudentService {
     return { data: students };
   }
 
-  async updateStudent(studentId: string, dto: UpdateStudentDto) {
+  async update(studentId: string, dto: UpdateStudentDto) {
     const student = await this.prisma.student.findFirst({
       where: { id: studentId },
     });
@@ -89,7 +89,7 @@ export class StudentService {
     return { message: 'Student updated successfully' };
   }
 
-  async deleteStudent(studentId: string) {
+  async delete(studentId: string) {
     const student = await this.prisma.student.findFirst({
       where: { id: studentId },
     });
@@ -109,7 +109,7 @@ export class StudentService {
     return { message: 'Student deleted successfully' };
   }
 
-  async assignStudentToGroup(data: { studentId: string; groupId: string }) {
+  async assignToGroup(data: { studentId: string; groupId: string }) {
     await this.prisma.student.update({
       where: { id: data.studentId },
       data: {

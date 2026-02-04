@@ -40,13 +40,13 @@ export class TeacherService {
     return { message: "Teacher created!" }
   }
 
-  async getAllTeachers() {
+  async getAll() {
     const teachers = await this.prisma.teacher.findMany({ include: { groups: true, user: true, subjects: true } })
 
-    return { data: teachers }
+    return teachers
   }
 
-  async deleteTeacher(teacherId: string) {
+  async delete(teacherId: string) {
     const teacher = await this.prisma.teacher.findFirst({
       where: { id: teacherId },
     });

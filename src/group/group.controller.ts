@@ -14,7 +14,7 @@ export class GroupController {
 
   @Get()
   getAll() {
-    return this.groupService.getAllGroups()
+    return this.groupService.getAll()
   }
 
   @Patch('assign-teacher')
@@ -34,6 +34,6 @@ export class GroupController {
 
   @Delete('delete/:id')
   deleteGroup(@Param('id') groupId: string) {
-    return this.groupService.deleteGroup(groupId);
+    return this.groupService.delete(groupId);
   }
 }

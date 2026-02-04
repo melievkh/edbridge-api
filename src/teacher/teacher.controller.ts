@@ -13,11 +13,11 @@ export class TeacherController {
 
   @Get()
   getAllTeachers() {
-    return this.teacherService.getAllTeachers()
+    return this.teacherService.getAll()
   }
 
   @Delete('delete/:id')
   deleteTeacher(@Param('id') userId: string) {
-    return this.teacherService.deleteTeacher(userId);
+    return this.teacherService.delete(userId);
   }
 }

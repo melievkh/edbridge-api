@@ -39,7 +39,7 @@ export class GroupService {
     })
   }
 
-  async updateGroup(groupId: string, dto: GroupDto) {
+  async update(groupId: string, dto: GroupDto) {
     await this.prisma.group.update({
       where: { id: groupId },
       data: {
@@ -63,7 +63,7 @@ export class GroupService {
     return { data: students }
   }
 
-  async getAllGroups() {
+  async getAll() {
     const groups = await this.prisma.group.findMany({
       include: {
         teacher: true,
@@ -75,7 +75,7 @@ export class GroupService {
     return { data: groups }
   }
 
-  async deleteGroup(groupId: string) {
+  async delete(groupId: string) {
     await this.prisma.group.delete({
       where: { id: groupId }
     })

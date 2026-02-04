@@ -13,7 +13,7 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
-      where: { phone: dto.phone }
+      where: { phone: dto.login }
     });
     if (!user) { throw new BadRequestException('Invalid phone or password'); }
 

@@ -7,11 +7,11 @@ export class UserController {
 
   @Get()
   getAll() {
-    return this.userService.getAllUsers();
+    return this.userService.getAll();
   }
 
   @Delete('delete/:id')
   deleteUser(@Param('id') userId: string) {
-    return this.userService.deleteUser(userId);
+    return this.userService.delete(userId);
   }
 }
