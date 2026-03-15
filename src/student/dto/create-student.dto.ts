@@ -1,17 +1,22 @@
-import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateStudentDto {
-  @IsPhoneNumber()
-  phone: string;
+  @IsString()
+  password: string;
 
   @IsString()
-  lastname: string
+  fullname: string
 
-  @IsString()
-  firstname: string
-
+  @IsDateString()
   @IsOptional()
   birthDate?: string;
+
+  @IsString()
+  phone1: string;
+
+  @IsString()
+  @IsOptional()
+  phone2: string;
 
   @IsString()
   groupId?: string;

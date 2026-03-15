@@ -6,6 +6,8 @@ import { SubjectDto } from './dto/subject.dto';
 export class SubjectService {
   constructor(private prisma: PrismaService) { }
 
+  // CREATE A SUBJECT
+
   async create(dto: SubjectDto) {
     await this.prisma.subject.create({
       data: { name: dto.name }
@@ -14,13 +16,17 @@ export class SubjectService {
     return { message: "Subject created successfully!" }
   }
 
+  // GET ALL SUBJECTS 
+
   async getAll() {
     const subjects = await this.prisma.subject.findMany({
-      include: { groups: true, teachers: true }
+      include: { groups: true, teacher: true }
     })
 
-    return subjects
+    return { data: subjects }
   }
+
+  // UPDATE A SUBJECT
 
   async update(subjectId: string, dto: SubjectDto) {
     const subject = await this.prisma.subject.findUnique({
@@ -38,6 +44,8 @@ export class SubjectService {
 
     return { message: "Subject updated successfully!" }
   }
+
+  // DELETE A SUBJECT
 
   async delete(subjectId: string) {
     const subject = await this.prisma.subject.findUnique({

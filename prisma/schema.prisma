@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  lastname  String
-  firstname String
-  login     String   @unique
+  id        String    @id @default(uuid())
+  fullname  String
+  login     String    @unique
   password  String
-  phone     String   @unique
+  phone1    String    @unique
+  phone2    String?   @unique
   role      Role
-  createdAt DateTime @default(now())
-  birthDate String?
-  student   Student?
-  teacher   Teacher?
+  createdAt DateTime  @default(now())
+  birthDate DateTime?
+
+  student Student?
+  teacher Teacher?
 }
 
 model Student {
@@ -27,38 +28,44 @@ model Student {
   groupId      String?
   referralCode String?
   status       StudentStatus @default(NEW)
-  attendance   Attendance[]
-  payments     Payment[]
-  group        Group?        @relation(fields: [groupId], references: [id])
-  user         User          @relation(fields: [userId], references: [id])
-  tests        TestResult[]
+
+  attendance Attendance[]
+  payments   Payment[]
+  user       User         @relation(fields: [userId], references: [id])
+  vouchers   Voucher[]
+  group      Group?       @relation(fields: [groupId], references: [id])
 }
 
 model Teacher {
-  id       String    @id @default(uuid())
-  userId   String    @unique
+  id     String        @id @default(uuid())
+  userId String        @unique
+  status TeacherStatus @default(MAIN)
+
   groups   Group[]
   user     User      @relation(fields: [userId], references: [id])
-  subjects Subject[] @relation("TeacherSubjects")
+  subjects Subject[]
 }
 
 model Subject {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  groups   Group[]
-  teachers Teacher[] @relation("TeacherSubjects")
+  id        String  @id @default(uuid())
+  name      String  @unique
+  teacherId String?
+
+  groups  Group[]
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
 }
 
 model Group {
-  id        String    @id @default(uuid())
+  id        String  @id @default(uuid())
   name      String
-  level     String
+  level     String?
   teacherId String
   subjectId String
   schedule  String?
-  subject   Subject   @relation(fields: [subjectId], references: [id])
-  teacher   Teacher   @relation(fields: [teacherId], references: [id])
-  students  Student[]
+
+  subject  Subject   @relation(fields: [subjectId], references: [id])
+  teacher  Teacher   @relation(fields: [teacherId], references: [id])
+  students Student[]
 }
 
 model Attendance {
@@ -66,7 +73,8 @@ model Attendance {
   studentId String
   date      DateTime
   status    AttendanceStatus
-  student   Student          @relation(fields: [studentId], references: [id])
+
+  student Student @relation(fields: [studentId], references: [id])
 }
 
 model Payment {
@@ -75,16 +83,26 @@ model Payment {
   amount    Float
   date      DateTime      @default(now())
   method    PaymentMethod
-  student   Student       @relation(fields: [studentId], references: [id])
+  startDate DateTime      @default(now())
+  endDate   DateTime
+
+  student  Student   @relation(fields: [studentId], references: [id])
+  vouchers Voucher[]
 }
 
-model TestResult {
-  id        String   @id @default(uuid())
+model Voucher {
+  id        String    @id @default(uuid())
+  code      String    @unique
+  discount  Float
+  expiresAt DateTime
   studentId String
-  score     Int
-  maxScore  Int
-  date      DateTime @default(now())
-  student   Student  @relation(fields: [studentId], references: [id])
+  createdAt DateTime  @default(now())
+  appliedAt DateTime?
+  paymentId String?
+  used      Boolean   @default(false)
+
+  student Student  @relation(fields: [studentId], references: [id])
+  payment Payment? @relation(fields: [paymentId], references: [id])
 }
 
 enum Role {
@@ -101,10 +119,14 @@ enum StudentStatus {
   GRADUATED
 }
 
+enum TeacherStatus {
+  MAIN
+  ASSISTANT
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
-  LATE
 }
 
 enum PaymentMethod {

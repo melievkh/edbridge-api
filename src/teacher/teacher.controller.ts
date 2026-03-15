@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
-import { TeacherDto } from './dto/create-teacher.dto';
+import { CreateTeacherDto } from './dto/create-teacher.dto';
 
 @Controller('teacher')
 export class TeacherController {
   constructor(private teacherService: TeacherService) { }
 
   @Post('create')
-  create(@Body() dto: TeacherDto) {
+  create(@Body() dto: CreateTeacherDto) {
     return this.teacherService.create(dto);
   }
 

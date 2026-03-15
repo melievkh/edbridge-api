@@ -1,28 +1,22 @@
-import { IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class UpdateStudentDto {
-  @IsPhoneNumber()
-  @IsOptional()
-  phone: string;
-
   @IsString()
-  @IsOptional()
-  lastname: string
-
-  @IsString()
-  @IsOptional()
-  firstname: string
-
-  @IsString()
-  @IsOptional()
-  status: StudentStatus;
+  fullname: string
 
   @IsOptional()
+  @IsDateString()
   birthDate?: string;
 
   @IsString()
+  phone1: string;
+
+  @IsString()
   @IsOptional()
-  groupId?: string;
+  phone2: string;
+
+  @IsOptional()
+  status?: StudentStatus;
 }
 
 enum StudentStatus {

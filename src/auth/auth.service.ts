@@ -11,11 +11,24 @@ export class AuthService {
     private jwt: JwtService
   ) { }
 
-  async login(dto: LoginDto) {
+  async generateLogin() {
+    let login = "";
+    for (let i = 0; i < 11; i++) {
+      login += Math.floor(Math.random() * 10);
+    }
+    // Ensure the first digit is not zero
+    if (login[0] === "0") {
+      login = "1" + login.slice(1);
+    }
+    return login;
+  }
+
+
+  async loginUser(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
-      where: { phone: dto.login }
+      where: { login: dto.login }
     });
-    if (!user) { throw new BadRequestException('Invalid phone or password'); }
+    if (!user) { throw new BadRequestException('Invalid login or password'); }
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new BadRequestException('Invalid password');
