@@ -11,6 +11,8 @@ import { CourseModule } from './course/course.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { SubjectModule } from './subject/subject.module';
 import { PaymentModule } from './payment/payment.module';
+import { ScoreModule } from './score/score.module';
+import { VoucherModule } from './voucher/voucher.module';
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { PaymentModule } from './payment/payment.module';
     }),
     TeacherModule,
     SubjectModule,
-    PaymentModule
+    ScoreModule,
+    PaymentModule,
+    VoucherModule
   ],
   controllers: [AppController],
   providers: [AppService],

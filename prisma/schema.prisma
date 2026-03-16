@@ -29,11 +29,11 @@ model Student {
   userId String        @unique
   status StudentStatus @default(NEW)
 
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courses    Course[] // many-to-many
-  attendance Attendance[]
-  payments   Payment[]
-  vouchers   Voucher[]
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courses  Course[] // many-to-many
+  payments Payment[]
+  vouchers Voucher[]
+  scores   Score[]
 }
 
 model Course {
@@ -49,6 +49,7 @@ model Course {
   subject  Subject   @relation(fields: [subjectId], references: [id])
   students Student[] // many-to-many
   payments Payment[]
+  scores   Score[]
 }
 
 model Teacher {
@@ -69,15 +70,18 @@ model Subject {
   courses  Course[]
 }
 
-model Attendance {
-  id        String           @id @default(uuid())
-  studentId String
-  date      DateTime
-  status    AttendanceStatus
+model Score {
+  id         String           @id @default(uuid())
+  studentId  String
+  courseId   String
+  date       DateTime
+  score      Float?
+  attendance AttendanceStatus @default(ABSENT)
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id])
 
-  @@index([studentId])
+  @@unique([studentId, courseId, date])
 }
 
 model Payment {
@@ -102,7 +106,6 @@ model Voucher {
   id        String    @id @default(uuid())
   code      String    @unique
   discount  Int // in sum
-  expiresAt DateTime
   studentId String
   paymentId String?
   used      Boolean   @default(false)
