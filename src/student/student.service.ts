@@ -3,7 +3,6 @@ import { Injectable, BadRequestException, HttpException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { generateReferralCode } from 'src/utils/generate-referral.util';
 import { generateUniqueLogin } from 'src/utils/generate-login.util';
 
 @Injectable()
@@ -39,22 +38,22 @@ export class StudentService {
       const student = await tx.student.create({
         data: {
           userId: newUser.id,
-          referralCode: generateReferralCode(),
-          groupId: dto.groupId || null,
+          courseId: dto.courseId,
+          level: dto.level,
         },
       });
 
       return { newUser, student };
     });
 
-    return { data: result.newUser.login };
+    return { data: result };
   }
 
   // GET ALL STUDENTS
 
   async getAll() {
     const students = await this.prisma.student.findMany({
-      include: { user: true, group: true, attendance: true, payments: true, vouchers: true },
+      include: { user: true, course: true, attendance: true, payments: true, vouchers: true },
     });
 
     return { data: students };
@@ -108,16 +107,16 @@ export class StudentService {
   }
 
 
-  // ASSIGN STUDENT TO GROUP
+  // ASSIGN STUDENT TO COURSE
 
-  async assignToGroup(data: { studentId: string; groupId: string }) {
+  async assignToCourse(data: { studentId: string; courseId: string }) {
     await this.prisma.student.update({
       where: { id: data.studentId },
       data: {
-        group: { connect: { id: data.groupId } },
+        course: { connect: { id: data.courseId } },
       },
     });
 
-    return { message: 'Student assigned to group successfully' };
+    return { message: 'Student assigned to course successfully' };
   }
 }

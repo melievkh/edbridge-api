@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Payment" ALTER COLUMN "month" SET DATA TYPE TEXT;

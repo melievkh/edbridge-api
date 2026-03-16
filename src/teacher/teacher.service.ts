@@ -53,7 +53,7 @@ export class TeacherService {
   // GET ALL TEACHERS
 
   async getAll() {
-    const teachers = await this.prisma.teacher.findMany({ include: { groups: true, user: true, subjects: true } })
+    const teachers = await this.prisma.teacher.findMany({ include: { courses: true, user: true, subjects: true } })
 
     return { data: teachers };
   }
@@ -86,19 +86,24 @@ export class TeacherService {
   // DELETE A TEACHER
 
   async delete(teacherId: string) {
-    const teacher = await this.prisma.teacher.findFirst({
+    const teacher = await this.prisma.teacher.findUnique({
       where: { id: teacherId },
     });
 
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
-    await this.prisma.teacher.delete({
-      where: { id: teacherId },
-    })
 
-    await this.prisma.user.delete({
-      where: { id: teacher.userId },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.teacher.delete({
+        where: { id: teacherId },
+      });
+
+      if (teacher.userId) {
+        await tx.user.delete({
+          where: { id: teacher.userId },
+        });
+      }
     });
 
     return { message: 'Teacher deleted successfully' };

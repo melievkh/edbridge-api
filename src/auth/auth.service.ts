@@ -10,35 +10,21 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService
   ) { }
+  async generateTokens(userId: string, role: string) {
+    const payload = { sub: userId, role };
 
-  async generateLogin() {
-    let login = "";
-    for (let i = 0; i < 11; i++) {
-      login += Math.floor(Math.random() * 10);
-    }
-    // Ensure the first digit is not zero
-    if (login[0] === "0") {
-      login = "1" + login.slice(1);
-    }
-    return login;
+    return { accessToken: await this.jwt.signAsync(payload) };
   }
-
 
   async loginUser(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: { login: dto.login }
     });
-    if (!user) { throw new BadRequestException('Invalid login or password'); }
+    if (!user) { throw new BadRequestException('Login or password is incorrect'); }
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
-    if (!isMatch) throw new BadRequestException('Invalid password');
+    if (!isMatch) throw new BadRequestException('Login or password is incorrect');
 
     return this.generateTokens(user.id, user.role);
-  }
-
-  async generateTokens(userId: string, role: string) {
-    const payload = { sub: userId, role };
-
-    return { accessToken: await this.jwt.signAsync(payload) };
   }
 }

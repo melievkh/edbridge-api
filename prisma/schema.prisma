@@ -15,25 +15,27 @@ model User {
   phone1    String    @unique
   phone2    String?   @unique
   role      Role
-  createdAt DateTime  @default(now())
   birthDate DateTime?
+  coins     Int       @default(0)
+  createdAt DateTime  @default(now())
 
   student Student?
   teacher Teacher?
 }
 
 model Student {
-  id           String        @id @default(uuid())
-  userId       String        @unique
-  groupId      String?
-  referralCode String?
-  status       StudentStatus @default(NEW)
+  id     String        @id @default(uuid())
+  level  String?
+  userId String        @unique
+  status StudentStatus @default(NEW)
 
-  attendance Attendance[]
-  payments   Payment[]
-  user       User         @relation(fields: [userId], references: [id])
-  vouchers   Voucher[]
-  group      Group?       @relation(fields: [groupId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollments Enrollment[]
+  attendance  Attendance[]
+  payments    Payment[]
+  vouchers    Voucher[]
+  course      Course?      @relation(fields: [courseId], references: [id])
+  courseId    String?
 }
 
 model Teacher {
@@ -41,31 +43,48 @@ model Teacher {
   userId String        @unique
   status TeacherStatus @default(MAIN)
 
-  groups   Group[]
-  user     User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courses  Course[]
   subjects Subject[]
 }
 
 model Subject {
-  id        String  @id @default(uuid())
-  name      String  @unique
-  teacherId String?
+  id   String @id @default(uuid())
+  name String @unique
 
-  groups  Group[]
-  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  teachers Teacher[]
+  courses  Course[]
 }
 
-model Group {
+model Course {
   id        String  @id @default(uuid())
   name      String
   level     String?
   teacherId String
   subjectId String
   schedule  String?
+  price     Float
 
-  subject  Subject   @relation(fields: [subjectId], references: [id])
-  teacher  Teacher   @relation(fields: [teacherId], references: [id])
-  students Student[]
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  enrollments Enrollment[]
+  payments    Payment[]
+  students    Student[]
+
+  @@index([teacherId])
+  @@index([subjectId])
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  studentId String
+  courseId  String
+  joinedAt  DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
 }
 
 model Attendance {
@@ -74,35 +93,44 @@ model Attendance {
   date      DateTime
   status    AttendanceStatus
 
-  student Student @relation(fields: [studentId], references: [id])
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
 }
 
 model Payment {
   id        String        @id @default(uuid())
   studentId String
+  courseId  String
   amount    Float
-  date      DateTime      @default(now())
   method    PaymentMethod
-  startDate DateTime      @default(now())
-  endDate   DateTime
+  month     Int
+  year      Int
+  createdAt DateTime      @default(now())
 
-  student  Student   @relation(fields: [studentId], references: [id])
+  student  Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course   Course    @relation(fields: [courseId], references: [id])
   vouchers Voucher[]
+
+  @@index([studentId])
+  @@index([courseId])
 }
 
 model Voucher {
   id        String    @id @default(uuid())
   code      String    @unique
-  discount  Float
+  discount  Int // in sum
   expiresAt DateTime
   studentId String
-  createdAt DateTime  @default(now())
-  appliedAt DateTime?
   paymentId String?
   used      Boolean   @default(false)
+  appliedAt DateTime?
+  createdAt DateTime  @default(now())
 
-  student Student  @relation(fields: [studentId], references: [id])
+  student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@index([studentId])
 }
 
 enum Role {

@@ -7,7 +7,7 @@ export class UserService {
 
   async getAll() {
     const users = await this.prisma.user.findMany({ include: { student: true, teacher: true } });
-    return users;
+    return { data: users };
   }
 
   async delete(userId: string) {

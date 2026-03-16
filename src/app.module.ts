@@ -7,10 +7,10 @@ import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
 import appConfig from './config/app.config';
 import { UserModule } from './user/user.module';
-import { GroupModule } from './group/group.module';
+import { CourseModule } from './course/course.module';
 import { TeacherModule } from './teacher/teacher.module';
-import { SubjectController } from './subject/subject.controller';
 import { SubjectModule } from './subject/subject.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { SubjectModule } from './subject/subject.module';
     PrismaModule,
     StudentModule,
     UserModule,
-    GroupModule,
+    CourseModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -26,6 +26,7 @@ import { SubjectModule } from './subject/subject.module';
     }),
     TeacherModule,
     SubjectModule,
+    PaymentModule
   ],
   controllers: [AppController],
   providers: [AppService],

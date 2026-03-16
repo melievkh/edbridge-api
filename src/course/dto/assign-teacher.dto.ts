@@ -1,4 +1,4 @@
 export class AssignTeacherDto {
   teacherId: string;
-  groupId: string;
+  courseId: string;
 }

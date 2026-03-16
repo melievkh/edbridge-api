@@ -7,7 +7,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 export class StudentController {
   constructor(private studentService: StudentService) { }
 
-  @Post('create')
+  @Post()
   create(@Body() dto: CreateStudentDto) {
     return this.studentService.create(dto);
   }
@@ -22,13 +22,13 @@ export class StudentController {
     return this.studentService.update(studentId, dto);
   }
 
-  @Delete('delete/:id')
+  @Delete(':id')
   deleteStudent(@Param('id') studentId: string) {
     return this.studentService.delete(studentId);
   }
 
-  @Post('add-to-group')
-  assignStudentToGroup(@Body() data: { studentId: string, groupId: string }) {
-    return this.studentService.assignToGroup(data)
+  @Post('add-to-course')
+  assignStudentToCourse(@Body() data: { studentId: string, courseId: string }) {
+    return this.studentService.assignToCourse(data)
   }
 }

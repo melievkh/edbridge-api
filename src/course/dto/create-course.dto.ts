@@ -1,6 +1,6 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
-export class GroupDto {
+export class CourseDto {
   @IsString()
   name: string;
 
@@ -15,4 +15,7 @@ export class GroupDto {
 
   @IsString()
   subjectId: string
+
+  @IsNumber()
+  price: number
 }

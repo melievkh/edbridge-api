@@ -20,7 +20,7 @@ export class SubjectService {
 
   async getAll() {
     const subjects = await this.prisma.subject.findMany({
-      include: { groups: true, teacher: true }
+      include: { courses: true, teachers: true }
     })
 
     return { data: subjects }
