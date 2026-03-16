@@ -27,10 +27,10 @@ export class CourseController {
     return this.courseService.assignSubjectToCourse(subjectId, courseId);
   }
 
-  @Get(':id/students')
-  getCourseStudents(@Param('id') courseId: string) {
-    return this.courseService.getCourseStudents(courseId)
-  }
+  // @Get(':id/students')
+  // getCourseStudents(@Param('id') courseId: string) {
+  //   return this.courseService.getCourseStudents(courseId)
+  // }
 
   @Delete(':id')
   deleteCourse(@Param('id') courseId: string) {

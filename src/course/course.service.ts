@@ -17,7 +17,7 @@ export class CourseService {
         subjectId: dto.subjectId,
         price: dto.price
       },
-      include: { teacher: true, subject: true }
+      include: { teacher: true, subject: true, students: true }
     })
 
     return { message: "Course created successfully!" }
@@ -53,15 +53,6 @@ export class CourseService {
     })
 
     return { message: "Course updated successfully!" }
-  }
-
-  async getCourseStudents(courseId: string) {
-    const students = await this.prisma.student.findMany({
-      where: { courseId },
-      include: { course: true }
-    })
-
-    return { data: students }
   }
 
   async getAll() {

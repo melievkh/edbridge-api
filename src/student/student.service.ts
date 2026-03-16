@@ -38,9 +38,12 @@ export class StudentService {
       const student = await tx.student.create({
         data: {
           userId: newUser.id,
-          courseId: dto.courseId,
           level: dto.level,
+          courses: {
+            connect: { id: dto.courseId },
+          },
         },
+        include: { courses: true }
       });
 
       return { newUser, student };
@@ -53,7 +56,7 @@ export class StudentService {
 
   async getAll() {
     const students = await this.prisma.student.findMany({
-      include: { user: true, course: true, attendance: true, payments: true, vouchers: true },
+      include: { user: true, courses: true, attendance: true, payments: true, vouchers: true },
     });
 
     return { data: students };
@@ -107,16 +110,61 @@ export class StudentService {
   }
 
 
-  // ASSIGN STUDENT TO COURSE
+  async addToCourse(studentId: string, courseId: string) {
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+    });
 
-  async assignToCourse(data: { studentId: string; courseId: string }) {
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    if (!course) {
+      throw new BadRequestException('Course not found');
+    }
+
     await this.prisma.student.update({
-      where: { id: data.studentId },
+      where: { id: studentId },
       data: {
-        course: { connect: { id: data.courseId } },
+        courses: {
+          connect: { id: courseId },
+        },
       },
     });
 
-    return { message: 'Student assigned to course successfully' };
+    return { message: 'Student added to course successfully' };
+  }
+
+  async removeFromCourse(studentId: string, courseId: string) {
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    if (!course) {
+      throw new BadRequestException('Course not found');
+    }
+
+    await this.prisma.student.update({
+      where: { id: studentId },
+      data: {
+        courses: {
+          disconnect: { id: courseId },
+        },
+      },
+    });
+
+    return { message: 'Student removed from course successfully' };
   }
 }

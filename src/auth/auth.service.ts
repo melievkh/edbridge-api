@@ -20,6 +20,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { login: dto.login }
     });
+
     if (!user) { throw new BadRequestException('Login or password is incorrect'); }
 
     const isMatch = await bcrypt.compare(dto.password, user.password);

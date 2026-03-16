@@ -29,13 +29,26 @@ model Student {
   userId String        @unique
   status StudentStatus @default(NEW)
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  enrollments Enrollment[]
-  attendance  Attendance[]
-  payments    Payment[]
-  vouchers    Voucher[]
-  course      Course?      @relation(fields: [courseId], references: [id])
-  courseId    String?
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courses    Course[] // many-to-many
+  attendance Attendance[]
+  payments   Payment[]
+  vouchers   Voucher[]
+}
+
+model Course {
+  id        String  @id @default(uuid())
+  name      String
+  level     String?
+  teacherId String
+  subjectId String
+  schedule  String?
+  price     Float
+
+  teacher  Teacher   @relation(fields: [teacherId], references: [id])
+  subject  Subject   @relation(fields: [subjectId], references: [id])
+  students Student[] // many-to-many
+  payments Payment[]
 }
 
 model Teacher {
@@ -54,37 +67,6 @@ model Subject {
 
   teachers Teacher[]
   courses  Course[]
-}
-
-model Course {
-  id        String  @id @default(uuid())
-  name      String
-  level     String?
-  teacherId String
-  subjectId String
-  schedule  String?
-  price     Float
-
-  teacher     Teacher      @relation(fields: [teacherId], references: [id])
-  subject     Subject      @relation(fields: [subjectId], references: [id])
-  enrollments Enrollment[]
-  payments    Payment[]
-  students    Student[]
-
-  @@index([teacherId])
-  @@index([subjectId])
-}
-
-model Enrollment {
-  id        String   @id @default(uuid())
-  studentId String
-  courseId  String
-  joinedAt  DateTime @default(now())
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@unique([studentId, courseId])
 }
 
 model Attendance {

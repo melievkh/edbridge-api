@@ -17,18 +17,23 @@ export class StudentController {
     return this.studentService.getAll();
   }
 
-  @Patch(':id')
+  @Patch('/update/:id')
   updateStudent(@Param('id') studentId: string, @Body() dto: UpdateStudentDto) {
     return this.studentService.update(studentId, dto);
+  }
+
+  @Patch('add-to-course')
+  addToCourse(@Body() { courseId, studentId }: { courseId: string; studentId: string }) {
+    return this.studentService.addToCourse(studentId, courseId);
+  }
+
+  @Patch('remove-from-course')
+  removeFromCourse(@Body() { courseId, studentId }: { courseId: string; studentId: string }) {
+    return this.studentService.removeFromCourse(studentId, courseId);
   }
 
   @Delete(':id')
   deleteStudent(@Param('id') studentId: string) {
     return this.studentService.delete(studentId);
-  }
-
-  @Post('add-to-course')
-  assignStudentToCourse(@Body() data: { studentId: string, courseId: string }) {
-    return this.studentService.assignToCourse(data)
   }
 }

@@ -10,4 +10,14 @@ export class PaymentController {
   create(@Body() dto: CreatePaymentDto) {
     return this.paymentService.create(dto);
   }
+
+  @Get()
+  getAll() {
+    return this.paymentService.getAll();
+  }
+
+  @Delete(':id')
+  deletePayment(@Param('id') paymentId: string) {
+    return this.paymentService.delete(paymentId);
+  }
 }
