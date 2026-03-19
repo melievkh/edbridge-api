@@ -6,8 +6,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
 
-    console.log(request.url);
-
     if (request.url === '/auth/login' && request.method === 'POST') {
       return true;
     }

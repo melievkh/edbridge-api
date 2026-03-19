@@ -13,6 +13,7 @@ import { SubjectModule } from './subject/subject.module';
 import { PaymentModule } from './payment/payment.module';
 import { ScoreModule } from './score/score.module';
 import { VoucherModule } from './voucher/voucher.module';
+import { RankingModule } from './ranking/ranking.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { VoucherModule } from './voucher/voucher.module';
     SubjectModule,
     ScoreModule,
     PaymentModule,
-    VoucherModule
+    VoucherModule,
+    RankingModule
   ],
   controllers: [AppController],
   providers: [AppService],

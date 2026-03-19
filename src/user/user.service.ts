@@ -10,6 +10,18 @@ export class UserService {
     return { data: users };
   }
 
+  async findById(userId) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }, include: { student: { include: { scores: true, courses: true } }, teacher: true }
+    })
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return { data: user }
+  }
+
   async delete(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

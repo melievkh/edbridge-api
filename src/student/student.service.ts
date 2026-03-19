@@ -56,7 +56,7 @@ export class StudentService {
 
   async getAll() {
     const students = await this.prisma.student.findMany({
-      include: { user: true, courses: true, payments: true, vouchers: true },
+      include: { user: true, courses: true, payments: true, vouchers: true, scores: true },
     });
 
     return { data: students };

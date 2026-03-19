@@ -1,4 +1,4 @@
-import { IsDate, IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class UpdateStudentDto {
   @IsString()
@@ -14,14 +14,5 @@ export class UpdateStudentDto {
   @IsString()
   @IsOptional()
   phone2: string;
-
-  @IsOptional()
-  status?: StudentStatus;
 }
 
-enum StudentStatus {
-  NEW,
-  ACTIVE,
-  SUSPENDED,
-  GRADUATED
-}
