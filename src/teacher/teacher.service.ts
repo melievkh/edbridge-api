@@ -47,13 +47,13 @@ export class TeacherService {
       return { newUser, teacher };
     });
 
-    return { data: result.newUser.login };
+    return { data: result.newUser };
   }
 
   // GET ALL TEACHERS
 
   async getAll() {
-    const teachers = await this.prisma.teacher.findMany({ include: { courses: true, user: true, subjects: true } })
+    const teachers = await this.prisma.teacher.findMany({ include: { courses: true, user: true } })
 
     return { data: teachers };
   }

@@ -60,7 +60,7 @@ export class CourseService {
       include: {
         teacher: true,
         subject: true,
-        students: true
+        students: true,
       }
     })
 

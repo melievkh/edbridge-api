@@ -14,4 +14,9 @@ export class ScoreController {
   getCourseScores(@Param('id') courseId: string) {
     return this.scoreService.getCourseScores(courseId);
   }
+
+  @Post('/delete')
+  deleteCourseScores() {
+    return this.scoreService.deleteScores()
+  }
 }

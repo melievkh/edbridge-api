@@ -1,17 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Request } from '@nestjs/common';
 import { RankingService } from './ranking.service';
 
 @Controller('ranking')
 export class RankingController {
   constructor(private rankingService: RankingService) { }
 
-  @Get('performance')
+  @Get()
   getPerformance() {
     return this.rankingService.getPerformanceRanking();
   }
 
-  @Get('coins')
-  getCoins() {
-    return this.rankingService.getCoinsRanking();
+  @Get('me')
+  getMyRanking(@Request() req) {
+    return this.rankingService.getMyRanking(req.user.userId);
   }
 }

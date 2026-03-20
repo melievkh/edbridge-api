@@ -21,7 +21,8 @@ export class AuthService {
       where: { login: dto.login }
     });
 
-    if (!user) { throw new BadRequestException('Login or password is incorrect'); }
+    if (!user) throw new BadRequestException('Login or password is incorrect');
+    if (!user.isActive) throw new BadRequestException('User is not active! Contact with admin');
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new BadRequestException('Login or password is incorrect');

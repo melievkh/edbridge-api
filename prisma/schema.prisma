@@ -18,6 +18,7 @@ model User {
   birthDate DateTime?
   coins     Int       @default(0)
   createdAt DateTime  @default(now())
+  isActive  Boolean   @default(true)
 
   student Student?
   teacher Teacher?
@@ -56,24 +57,22 @@ model Teacher {
   userId String        @unique
   status TeacherStatus @default(MAIN)
 
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courses  Course[]
-  subjects Subject[]
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courses Course[]
 }
 
 model Subject {
   id   String @id @default(uuid())
   name String @unique
 
-  teachers Teacher[]
-  courses  Course[]
+  courses Course[]
 }
 
 model Score {
   id         String           @id @default(uuid())
   studentId  String
   courseId   String
-  date       DateTime
+  date       DateTime         @unique
   score      Float?
   attendance AttendanceStatus @default(ABSENT)
 

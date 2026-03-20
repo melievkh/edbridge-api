@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Score, AttendanceStatus, Prisma } from '@prisma/client';
 
@@ -17,9 +17,30 @@ export class ScoreService {
     students: StudentScore[],
   ): Promise<Score[]> {
     const results: Score[] = [];
+    const existingScores = await this.prisma.score.findFirst({
+      where: {
+        courseId,
+        date,
+      },
+    });
+
+    if (existingScores) {
+      throw new BadRequestException('Scores are already submitted for this course on this date!');
+    }
 
     await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       for (const student of students) {
+        const enrollment = await tx.course.findFirst({
+          where: {
+            id: courseId,
+            students: { some: { id: student.studentId } },
+          },
+        });
+
+        if (!enrollment) {
+          throw new BadRequestException("Student is not enrolled in the course");
+        }
+
         const scoreRecord = await this.createOrUpdateScore(tx, courseId, date, student);
         results.push(scoreRecord);
       }
@@ -43,10 +64,10 @@ export class ScoreService {
     return { data: courseScores };
   }
 
+  async deleteScores() {
+    await this.prisma.score.deleteMany()
+  }
 
-  // -----------------------------
-  // Helper function
-  // -----------------------------
   private async createOrUpdateScore(
     tx: Prisma.TransactionClient,
     courseId: string,

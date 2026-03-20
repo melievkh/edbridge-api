@@ -19,7 +19,7 @@ export class UserService {
       throw new BadRequestException('User not found');
     }
 
-    return { data: user }
+    return user
   }
 
   async delete(userId: string) {
