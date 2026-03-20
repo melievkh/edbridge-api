@@ -85,6 +85,82 @@ export class PaymentService {
     return { data: payments };
   }
 
+
+  async getMyPaymentStatus(userId: string): Promise<CoursePaymentStatus[]> {
+    const student = await this.prisma.student.findUnique({
+      where: { userId },
+      include: {
+        courses: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+          },
+        },
+      },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    const allPayments = await this.prisma.payment.findMany({
+      where: { studentId: student.id },
+    });
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    const result: CoursePaymentStatus[] = [];
+
+    for (const course of student.courses) {
+      const months: MonthStatus[] = [];
+      const coursePayments = allPayments.filter(
+        (p) => String(p.courseId) === String(course.id)
+      );
+
+      // 🔹 eng birinchi to‘lov oyini aniqlaymiz
+      const firstPaid = coursePayments.length
+        ? coursePayments.reduce((prev, curr) => {
+          if (curr.year < prev.year) return curr;
+          if (curr.year === prev.year && curr.month < prev.month) return curr;
+          return prev;
+        })
+        : null;
+
+      // agar to‘lov bo‘lmasa, start oy = 1, start year = hozirgi yil
+      let month = firstPaid ? firstPaid.month : 1;
+      let year = firstPaid ? firstPaid.year : currentYear;
+
+      // 🔹 end year va month: kelajak uchun, masalan currentYear oxirigacha yoki xohlasa 12 oy
+      const endYear = currentYear;
+      const endMonth = 12;
+
+      while (year < endYear || (year === endYear && month <= endMonth)) {
+        const paid = coursePayments.some(
+          (p) => p.month === month && p.year === year
+        );
+
+        months.push({ month, year, paid });
+
+        month++;
+        if (month > 12) {
+          month = 1;
+          year++;
+        }
+      }
+
+      result.push({
+        courseId: course.id,
+        courseName: course.name,
+        monthlyPrice: course.price,
+        months,
+      });
+    }
+
+    return result
+  }
+
   async delete(paymentId: string) {
     const payment = await this.prisma.payment.findUnique({
       where: { id: paymentId },
@@ -101,3 +177,17 @@ export class PaymentService {
     return { message: 'Payment deleted successfully' };
   }
 }
+
+
+type MonthStatus = {
+  month: number;
+  year: number;
+  paid: boolean;
+};
+
+type CoursePaymentStatus = {
+  courseId: string;
+  courseName: string;
+  monthlyPrice: number;
+  months: MonthStatus[];
+};

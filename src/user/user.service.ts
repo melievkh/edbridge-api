@@ -12,7 +12,7 @@ export class UserService {
 
   async findById(userId) {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }, include: { student: { include: { scores: true, courses: true } }, teacher: true }
+      where: { id: userId }, include: { student: { include: { scores: true, courses: true, payments: true } }, teacher: true }
     })
 
     if (!user) {

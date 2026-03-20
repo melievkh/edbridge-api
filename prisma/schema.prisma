@@ -72,7 +72,7 @@ model Score {
   id         String           @id @default(uuid())
   studentId  String
   courseId   String
-  date       DateTime         @unique
+  date       DateTime
   score      Float?
   attendance AttendanceStatus @default(ABSENT)
 

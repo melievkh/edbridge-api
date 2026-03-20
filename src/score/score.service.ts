@@ -16,7 +16,7 @@ export class ScoreService {
     date: Date,
     students: StudentScore[],
   ): Promise<Score[]> {
-    const results: Score[] = [];
+
     const existingScores = await this.prisma.score.findFirst({
       where: {
         courseId,
@@ -25,8 +25,10 @@ export class ScoreService {
     });
 
     if (existingScores) {
-      throw new BadRequestException('Scores are already submitted for this course on this date!');
+      throw new BadRequestException('Scores already submitted today');
     }
+
+    const results: Score[] = [];
 
     await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       for (const student of students) {
@@ -41,7 +43,13 @@ export class ScoreService {
           throw new BadRequestException("Student is not enrolled in the course");
         }
 
-        const scoreRecord = await this.createOrUpdateScore(tx, courseId, date, student);
+        const scoreRecord = await this.createOrUpdateScore(
+          tx,
+          courseId,
+          date,
+          student
+        );
+
         results.push(scoreRecord);
       }
     });

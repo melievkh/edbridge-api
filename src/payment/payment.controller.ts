@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
@@ -14,6 +14,11 @@ export class PaymentController {
   @Get()
   getAll() {
     return this.paymentService.getAll();
+  }
+
+  @Get('/me')
+  getMyPaymentStatus(@Request() req) {
+    return this.paymentService.getMyPaymentStatus(req.user.userId);
   }
 
   @Delete(':id')
