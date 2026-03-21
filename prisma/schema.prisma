@@ -101,14 +101,15 @@ model Payment {
 }
 
 model Voucher {
-  id        String    @id @default(uuid())
-  code      String    @unique
-  discount  Int // in sum
-  studentId String
-  paymentId String?
-  used      Boolean   @default(false)
-  appliedAt DateTime?
-  createdAt DateTime  @default(now())
+  id         String    @id @default(uuid())
+  code       String    @unique
+  discount   Int?    
+  title      String?  
+  studentId  String
+  paymentId  String?   
+  used       Boolean   @default(false)
+  appliedAt  DateTime?
+  createdAt  DateTime  @default(now())
 
   student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   payment Payment? @relation(fields: [paymentId], references: [id])

@@ -9,14 +9,13 @@ interface StudentScore {
 
 @Injectable()
 export class ScoreService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async submitScores(
     courseId: string,
     date: Date,
     students: StudentScore[],
   ): Promise<Score[]> {
-
     const existingScores = await this.prisma.score.findFirst({
       where: {
         courseId,
@@ -40,14 +39,16 @@ export class ScoreService {
         });
 
         if (!enrollment) {
-          throw new BadRequestException("Student is not enrolled in the course");
+          throw new BadRequestException(
+            'Student is not enrolled in the course',
+          );
         }
 
         const scoreRecord = await this.createOrUpdateScore(
           tx,
           courseId,
           date,
-          student
+          student,
         );
 
         results.push(scoreRecord);
@@ -73,7 +74,7 @@ export class ScoreService {
   }
 
   async deleteScores() {
-    await this.prisma.score.deleteMany()
+    await this.prisma.score.deleteMany();
   }
 
   private async createOrUpdateScore(
@@ -88,7 +89,13 @@ export class ScoreService {
         : AttendanceStatus.ABSENT;
 
     const existing = await tx.score.findUnique({
-      where: { studentId_courseId_date: { studentId: student.studentId, courseId, date } },
+      where: {
+        studentId_courseId_date: {
+          studentId: student.studentId,
+          courseId,
+          date,
+        },
+      },
     });
 
     if (existing) {

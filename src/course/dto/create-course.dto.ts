@@ -8,14 +8,22 @@ export class CourseDto {
   level: string;
 
   @IsString()
-  schedule: string
+  schedule: string;
 
   @IsString()
-  teacherId: string
+  teacherId: string;
 
   @IsString()
-  subjectId: string
+  subjectId: string;
 
   @IsNumber()
-  price: number
+  price: number;
+}
+
+export class EnrollStudentDto {
+  @IsString()
+  studentId: string;
+
+  @IsString()
+  courseId: string;
 }

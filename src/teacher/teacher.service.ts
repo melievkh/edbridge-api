@@ -1,14 +1,13 @@
 import * as bcrypt from 'bcrypt';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTeacherDto, } from './dto/create-teacher.dto';
+import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { generateUniqueLogin } from 'src/utils/generate-login.util';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 
-
 @Injectable()
 export class TeacherService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // CREATE A TEACHER
 
@@ -19,7 +18,6 @@ export class TeacherService {
 
     if (existingUser)
       throw new BadRequestException('User with the same phone already exists');
-
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const login = await generateUniqueLogin(this.prisma);
@@ -53,7 +51,9 @@ export class TeacherService {
   // GET ALL TEACHERS
 
   async getAll() {
-    const teachers = await this.prisma.teacher.findMany({ include: { courses: true, user: true } })
+    const teachers = await this.prisma.teacher.findMany({
+      include: { courses: true, user: true },
+    });
 
     return { data: teachers };
   }
@@ -81,7 +81,6 @@ export class TeacherService {
 
     return { data: updatedUser };
   }
-
 
   // DELETE A TEACHER
 

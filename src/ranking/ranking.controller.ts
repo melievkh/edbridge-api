@@ -3,7 +3,7 @@ import { RankingService } from './ranking.service';
 
 @Controller('ranking')
 export class RankingController {
-  constructor(private rankingService: RankingService) { }
+  constructor(private rankingService: RankingService) {}
 
   @Get()
   getPerformance() {

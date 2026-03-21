@@ -2,7 +2,7 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTeacherDto {
   @IsString()
-  fullname: string
+  fullname: string;
 
   @IsDate()
   @IsOptional()

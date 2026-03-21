@@ -4,62 +4,62 @@ import { SubjectDto } from './dto/subject.dto';
 
 @Injectable()
 export class SubjectService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // CREATE A SUBJECT
 
   async create(dto: SubjectDto) {
     await this.prisma.subject.create({
-      data: { name: dto.name }
-    })
+      data: { name: dto.name },
+    });
 
-    return { message: "Subject created successfully!" }
+    return { message: 'Subject created successfully!' };
   }
 
-  // GET ALL SUBJECTS 
+  // GET ALL SUBJECTS
 
   async getAll() {
     const subjects = await this.prisma.subject.findMany({
-      include: { courses: true }
-    })
+      include: { courses: true },
+    });
 
-    return { data: subjects }
+    return { data: subjects };
   }
 
   // UPDATE A SUBJECT
 
   async update(subjectId: string, dto: SubjectDto) {
     const subject = await this.prisma.subject.findUnique({
-      where: { id: subjectId }
-    })
+      where: { id: subjectId },
+    });
 
     if (!subject) {
-      throw new BadRequestException("Subject not found")
+      throw new BadRequestException('Subject not found');
     }
 
     await this.prisma.subject.update({
       where: { id: subjectId },
-      data: { name: dto.name }
-    })
+      data: { name: dto.name },
+    });
 
-    return { message: "Subject updated successfully!" }
+    return { message: 'Subject updated successfully!' };
   }
 
   // DELETE A SUBJECT
 
   async delete(subjectId: string) {
     const subject = await this.prisma.subject.findUnique({
-      where: { id: subjectId }
-    })
+      where: { id: subjectId },
+    });
 
     if (!subject) {
-      throw new HttpException("Subject not found", 404)
+      throw new HttpException('Subject not found', 404);
     }
 
     await this.prisma.subject.delete({
-      where: { id: subjectId }
-    })
+      where: { id: subjectId },
+    });
 
-    return { message: "Subject deleted successfully!" }
+    return { message: 'Subject deleted successfully!' };
   }
 }

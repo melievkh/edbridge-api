@@ -1,13 +1,32 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ScoreService } from './score.service';
 
 @Controller('score')
 export class ScoreController {
-  constructor(private scoreService: ScoreService) { }
+  constructor(private scoreService: ScoreService) {}
 
   @Post()
-  create(@Body() dto: { courseId: string; date: string; students: { studentId: string; score?: number }[] }) {
-    return this.scoreService.submitScores(dto.courseId, new Date(dto.date), dto.students);
+  create(
+    @Body()
+    dto: {
+      courseId: string;
+      date: string;
+      students: { studentId: string; score?: number }[];
+    },
+  ) {
+    return this.scoreService.submitScores(
+      dto.courseId,
+      new Date(dto.date),
+      dto.students,
+    );
   }
 
   @Get(':id')
@@ -17,6 +36,6 @@ export class ScoreController {
 
   @Post('/delete')
   deleteCourseScores() {
-    return this.scoreService.deleteScores()
+    return this.scoreService.deleteScores();
   }
 }

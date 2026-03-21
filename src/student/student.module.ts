@@ -7,5 +7,4 @@ import { StudentController } from './student.controller';
   providers: [StudentService, PrismaService],
   controllers: [StudentController],
 })
-
-export class StudentModule { }
+export class StudentModule {}

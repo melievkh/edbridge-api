@@ -6,5 +6,5 @@ export class CreateScoreDto {
 
   @IsNumber()
   @IsOptional()
-  score?: number
+  score?: number;
 }

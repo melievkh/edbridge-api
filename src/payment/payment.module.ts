@@ -7,4 +7,4 @@ import { PaymentController } from './payment.controller';
   providers: [PaymentService, PrismaService],
   controllers: [PaymentController],
 })
-export class PaymentModule { }
+export class PaymentModule {}

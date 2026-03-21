@@ -5,7 +5,9 @@ function generateLogin(): string {
   return `110${random}`;
 }
 
-export async function generateUniqueLogin(prisma: PrismaService): Promise<string> {
+export async function generateUniqueLogin(
+  prisma: PrismaService,
+): Promise<string> {
   let login: string;
   let exists = true;
 

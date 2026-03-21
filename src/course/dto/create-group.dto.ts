@@ -8,11 +8,11 @@ export class GroupDto {
   level: string;
 
   @IsString()
-  schedule: string
+  schedule: string;
 
   @IsString()
-  teacherId: string
+  teacherId: string;
 
   @IsString()
-  subjectId: string
+  subjectId: string;
 }

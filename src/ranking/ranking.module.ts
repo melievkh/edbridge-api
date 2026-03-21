@@ -7,4 +7,4 @@ import { RankingController } from './ranking.controller';
   providers: [PrismaService, RankingService],
   controllers: [RankingController],
 })
-export class RankingModule { }
+export class RankingModule {}

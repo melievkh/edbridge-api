@@ -1,4 +1,10 @@
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 enum PaymentMethod {
   CASH = 'CASH',
@@ -29,4 +35,3 @@ export class CreatePaymentDto {
   @IsNumber()
   year: number;
 }
-

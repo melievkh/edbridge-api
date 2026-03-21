@@ -3,16 +3,16 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class RankingService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getPerformanceRanking() {
     const users = await this.prisma.user.findMany({
       where: { isActive: true },
       include: {
         student: {
-          include: { scores: { where: { score: { not: null } } } }
-        }
-      }
+          include: { scores: { where: { score: { not: null } } } },
+        },
+      },
     });
 
     const ranked = users
@@ -45,10 +45,25 @@ export class RankingService {
   }
 
   async getMyRanking(userId: string) {
-    const allRanking = await this.getPerformanceRanking();
-    const myIndex = allRanking.data.findIndex(item => item.userId === userId);
+    const user = await this.prisma.student.findUnique({
+      where: { userId },
+    });
 
-    const me = allRanking.data[myIndex];
+    if (!user) throw new Error('Student not found');
+
+    const allRanking = await this.getPerformanceRanking();
+
+    const myLevelRanking = allRanking.data.filter(
+      (item) => item.level === user.level,
+    );
+
+    const myIndex = myLevelRanking.findIndex((item) => item.userId === userId);
+
+    if (myIndex === -1) {
+      return { data: null, message: 'User not found in this level' };
+    }
+
+    const me = myLevelRanking[myIndex];
 
     return { data: { ...me, rank: myIndex + 1 } };
   }

@@ -1,10 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { SubjectDto } from './dto/subject.dto';
 
 @Controller('subject')
 export class SubjectController {
-  constructor(private subjectService: SubjectService) { }
+  constructor(private subjectService: SubjectService) {}
 
   @Post()
   create(@Body() dto: SubjectDto) {

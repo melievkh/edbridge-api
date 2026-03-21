@@ -5,7 +5,7 @@ export class CreateTeacherDto {
   password: string;
 
   @IsString()
-  fullname: string
+  fullname: string;
 
   @IsDate()
   @IsOptional()

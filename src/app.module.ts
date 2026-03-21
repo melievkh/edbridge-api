@@ -32,10 +32,9 @@ import { RankingModule } from './ranking/ranking.module';
     ScoreModule,
     PaymentModule,
     VoucherModule,
-    RankingModule
+    RankingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
-
 })
-export class AppModule { }
+export class AppModule {}

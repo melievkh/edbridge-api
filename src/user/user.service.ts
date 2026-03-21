@@ -3,23 +3,29 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getAll() {
-    const users = await this.prisma.user.findMany({ include: { student: true, teacher: true } });
+    const users = await this.prisma.user.findMany({
+      include: { student: true, teacher: true },
+    });
     return { data: users };
   }
 
   async findById(userId) {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }, include: { student: { include: { scores: true, courses: true, payments: true } }, teacher: true }
-    })
+      where: { id: userId },
+      include: {
+        student: { include: { scores: true, courses: true, payments: true } },
+        teacher: true,
+      },
+    });
 
     if (!user) {
       throw new BadRequestException('User not found');
     }
 
-    return user
+    return user;
   }
 
   async delete(userId: string) {

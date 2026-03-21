@@ -7,5 +7,4 @@ import { ScoreController } from './score.controller';
   providers: [ScoreService, PrismaService],
   controllers: [ScoreController],
 })
-
-export class ScoreModule { }
+export class ScoreModule {}

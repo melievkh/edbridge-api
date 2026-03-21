@@ -1,11 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 
 @Controller('teacher')
 export class TeacherController {
-  constructor(private teacherService: TeacherService) { }
+  constructor(private teacherService: TeacherService) {}
 
   @Post()
   create(@Body() dto: CreateTeacherDto) {
@@ -14,7 +22,7 @@ export class TeacherController {
 
   @Get()
   getAllTeachers() {
-    return this.teacherService.getAll()
+    return this.teacherService.getAll();
   }
 
   @Patch(':id')

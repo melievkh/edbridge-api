@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -13,17 +18,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
       const res = exception.getResponse();
       if (typeof res === 'string') message = res;
-      else if (typeof res === 'object' && res !== null) message = (res as any).message || message;
-    }
-
-    else if (exception?.code) {
+      else if (typeof res === 'object' && res !== null)
+        message = (res as any).message || message;
+    } else if (exception?.code) {
       switch (exception.code) {
         case 'P2002':
           message = 'Duplicate value. Record already exists.';
           status = 400;
           break;
         case 'P2003':
-          message = 'Cannot delete or update this record because it is linked to other resources.';
+          message =
+            'Cannot delete or update this record because it is linked to other resources.';
           status = 400;
           break;
         case 'P2025':
@@ -33,17 +38,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         default:
           message = exception.message || message;
       }
-    }
-
-    else if (
+    } else if (
       exception?.clientVersion &&
       exception?.message?.includes('violates RESTRICT')
     ) {
-      message = 'Cannot delete or update this record because it is linked to other resources.';
+      message =
+        'Cannot delete or update this record because it is linked to other resources.';
       status = 400;
-    }
-
-    else if (exception instanceof Error) {
+    } else if (exception instanceof Error) {
       message = exception.message;
     }
 

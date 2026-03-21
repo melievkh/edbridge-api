@@ -7,7 +7,7 @@ import { generateUniqueLogin } from 'src/utils/generate-login.util';
 
 @Injectable()
 export class StudentService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // CREATE A STUDENT
 
@@ -43,7 +43,7 @@ export class StudentService {
             connect: { id: dto.courseId },
           },
         },
-        include: { courses: true }
+        include: { courses: true },
       });
 
       return { newUser, student };
@@ -56,7 +56,13 @@ export class StudentService {
 
   async getAll() {
     const students = await this.prisma.student.findMany({
-      include: { user: true, courses: true, payments: true, vouchers: true, scores: true },
+      include: {
+        user: true,
+        courses: true,
+        payments: true,
+        vouchers: true,
+        scores: true,
+      },
     });
 
     return { data: students };
@@ -108,7 +114,6 @@ export class StudentService {
 
     return { message: 'Student deleted successfully' };
   }
-
 
   async addToCourse(studentId: string, courseId: string) {
     const student = await this.prisma.student.findUnique({

@@ -5,10 +5,10 @@ export class CreateStudentDto {
   password: string;
 
   @IsString()
-  fullname: string
+  fullname: string;
 
   @IsString()
-  level: string
+  level: string;
 
   @IsDate()
   @IsOptional()
@@ -24,4 +24,3 @@ export class CreateStudentDto {
   @IsString()
   courseId: string;
 }
-

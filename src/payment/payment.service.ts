@@ -4,13 +4,20 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Injectable()
 export class PaymentService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(dto: CreatePaymentDto) {
-    const { studentId, referalStudentId, courseId, amount, method, month, year } = dto;
+    const {
+      studentId,
+      referalStudentId,
+      courseId,
+      amount,
+      method,
+      month,
+      year,
+    } = dto;
 
     return this.prisma.$transaction(async (tx) => {
-
       const student = await tx.student.findUnique({
         where: { id: studentId },
       });
@@ -39,7 +46,9 @@ export class PaymentService {
       });
 
       if (existingPayment) {
-        throw new BadRequestException('Payment for this month and year already exists');
+        throw new BadRequestException(
+          'Payment for this month and year already exists',
+        );
       }
 
       // create payment
@@ -85,7 +94,6 @@ export class PaymentService {
     return { data: payments };
   }
 
-
   async getMyPaymentStatus(userId: string): Promise<CoursePaymentStatus[]> {
     const student = await this.prisma.student.findUnique({
       where: { userId },
@@ -116,16 +124,16 @@ export class PaymentService {
     for (const course of student.courses) {
       const months: MonthStatus[] = [];
       const coursePayments = allPayments.filter(
-        (p) => String(p.courseId) === String(course.id)
+        (p) => String(p.courseId) === String(course.id),
       );
 
       // 🔹 eng birinchi to‘lov oyini aniqlaymiz
       const firstPaid = coursePayments.length
         ? coursePayments.reduce((prev, curr) => {
-          if (curr.year < prev.year) return curr;
-          if (curr.year === prev.year && curr.month < prev.month) return curr;
-          return prev;
-        })
+            if (curr.year < prev.year) return curr;
+            if (curr.year === prev.year && curr.month < prev.month) return curr;
+            return prev;
+          })
         : null;
 
       // agar to‘lov bo‘lmasa, start oy = 1, start year = hozirgi yil
@@ -138,7 +146,7 @@ export class PaymentService {
 
       while (year < endYear || (year === endYear && month <= endMonth)) {
         const paid = coursePayments.some(
-          (p) => p.month === month && p.year === year
+          (p) => p.month === month && p.year === year,
         );
 
         months.push({ month, year, paid });
@@ -158,7 +166,7 @@ export class PaymentService {
       });
     }
 
-    return result
+    return result;
   }
 
   async delete(paymentId: string) {
@@ -177,7 +185,6 @@ export class PaymentService {
     return { message: 'Payment deleted successfully' };
   }
 }
-
 
 type MonthStatus = {
   month: number;
